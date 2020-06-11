@@ -10,10 +10,9 @@ import { logger } from "../../logger"
 //
 
 export interface PluginConfig {
-  "org": string,
   "client-id": string,
   "client-secret": string,
-  "enterprise-origin"?: string,
+  "domain"?: string,
 }
 
 export type PluginConfigKey = keyof PluginConfig
