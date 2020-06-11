@@ -61,7 +61,6 @@ export function validateConfig(config: Config) {
   ensureNodeIsNotEmpty(config, "auth")
   ensureNodeIsNotEmpty(config, "middlewares")
 
-  ensurePropExists(config, "org")
   ensurePropExists(config, "client-id")
   ensurePropExists(config, "client-secret")
 }
