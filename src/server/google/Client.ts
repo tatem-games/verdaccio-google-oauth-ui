@@ -1,5 +1,6 @@
 import got from "got"
 
+import { logger } from "../../logger"
 import { GoogleOAuth } from "./OAuth"
 import { GoogleUser } from "./User"
 
@@ -24,11 +25,14 @@ export class GoogleClient {
         client_id: clientId,
         client_secret: clientSecret,
         grant_type: 'authorization_code',
-        redirect_uri: redirectUrl
+        redirect_uri: redirectUrl,
         code,
       },
     } as const
-    return got(url, options).json()
+    return got(url, options).json().catch(e => {
+      logger.error(e)
+      throw e
+    })
   }
 
   /**
@@ -37,7 +41,7 @@ export class GoogleClient {
    * [Get the authenticated user](https://developer.github.com/v3/users/#get-the-authenticated-user)
    */
   requestUser = async (accessToken: string): Promise<GoogleUser> => {
-    const url = this.userInfoBaseUrl + "/v2/userinfo"
+    const url = this.userInfoBaseUrl + "/v1/userinfo"
     const options = {
       headers: {
         Authorization: "Bearer " + accessToken,

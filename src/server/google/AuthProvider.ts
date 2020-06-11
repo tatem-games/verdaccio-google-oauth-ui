@@ -10,7 +10,7 @@ export class GoogleAuthProvider implements AuthProvider {
   private readonly clientId = getConfig(this.config, "client-id")
   private readonly clientSecret = getConfig(this.config, "client-secret")
   private readonly requiredDomain = getConfig(this.config, "domain")
-  private readonly client = new GoogleClient(this.webBaseUrl, this.tokenBaseUrl, this.userInfoBaseUrl, this.redirectUrl)
+  private readonly client = new GoogleClient(this.webBaseUrl, this.tokenBaseUrl, this.userInfoBaseUrl)
 
   get authBaseUrl(): string {
     return "https://accounts.google.com"
