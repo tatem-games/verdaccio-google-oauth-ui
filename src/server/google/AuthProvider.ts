@@ -3,23 +3,25 @@ import { stringify } from "querystring"
 
 import { AuthProvider } from "../plugin/AuthProvider"
 import { Config, getConfig } from "../plugin/Config"
-import { GitHubClient } from "./Client"
+import { GoogleClient } from "./Client"
 
-export class GitHubAuthProvider implements AuthProvider {
+export class GoogleAuthProvider implements AuthProvider {
 
   private readonly clientId = getConfig(this.config, "client-id")
   private readonly clientSecret = getConfig(this.config, "client-secret")
-  private readonly enterpriseOrigin = getConfig(this.config, "enterprise-origin")
-  private readonly client = new GitHubClient(this.webBaseUrl, this.apiBaseUrl)
+  private readonly requiredDomain = getConfig(this.config, "domain")
+  private readonly client = new GoogleClient(this.webBaseUrl, this.tokenBaseUrl, this.userInfoBaseUrl)
 
-  get webBaseUrl(): string {
-    return this.enterpriseOrigin || "https://github.com"
+  get authBaseUrl(): string {
+    return "https://accounts.google.com"
   }
 
-  get apiBaseUrl(): string {
-    return this.enterpriseOrigin
-      ? this.enterpriseOrigin.replace(/\/?$/, "") + "/api/v3"
-      : "https://api.github.com"
+  get tokenBaseUrl(): string {
+    return "https://oauth2.googleapis.com"
+  }
+
+  get userInfoBaseUrl(): string {
+    return "https://openidconnect.googleapis.com"
   }
 
   constructor(
@@ -27,16 +29,18 @@ export class GitHubAuthProvider implements AuthProvider {
   ) { }
 
   getId() {
-    return "github"
+    return "google"
   }
 
   getLoginUrl(callbackUrl: string) {
-    const queryParams = stringify({
+    const params = {
       client_id: this.clientId,
       redirect_uri: callbackUrl,
-      scope: "read:org",
-    })
-    return this.webBaseUrl + `/login/oauth/authorize?` + queryParams
+      scope: "openid email profile",
+    }
+    if(requiredDomain) params.hd = requiredDomain
+    const queryParams = stringify(params)
+    return this.authBaseUrl + `/o/oauth2/v2/auth?` + queryParams
   }
 
   getCode(req: Request) {
@@ -50,12 +54,7 @@ export class GitHubAuthProvider implements AuthProvider {
 
   async getUsername(token: string) {
     const user = await this.client.requestUser(token)
-    return user.login
-  }
-
-  async getGroups(token: string) {
-    const orgs = await this.client.requestUserOrgs(token)
-    return orgs.map(org => org.login)
+    return user.email
   }
 
 }
