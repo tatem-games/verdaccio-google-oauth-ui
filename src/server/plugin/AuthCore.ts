@@ -7,7 +7,7 @@ import { Config, getConfig } from "./Config"
 
 export class AuthCore {
 
-  private readonly requiredGroup = getConfig(this.config, "org")
+  private readonly requiredGroup = 'google'
 
   constructor(
     private readonly verdaccio: Verdaccio,
