@@ -68,12 +68,12 @@ export class WebFlow implements IPluginMiddleware<any> {
    */
   callback: Handler = async (req, res, next) => {
     try {
+      const redirectUrl = this.getRedirectUrl(req)
       const code = await this.provider.getCode(req)
-      const token = await this.provider.getToken(code)
+      const token = await this.provider.getToken(code, redirectUrl)
       const username = await this.provider.getUsername(token)
-      const groups = await this.provider.getGroups(token)
 
-      if (this.core.canAuthenticate(username, groups)) {
+      if (this.core.canAuthenticate(username)) {
         const ui = await this.core.createUiCallbackUrl(username, token)
         res.redirect(ui)
       } else {

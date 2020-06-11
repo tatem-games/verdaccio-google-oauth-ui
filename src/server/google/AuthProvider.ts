@@ -10,7 +10,7 @@ export class GoogleAuthProvider implements AuthProvider {
   private readonly clientId = getConfig(this.config, "client-id")
   private readonly clientSecret = getConfig(this.config, "client-secret")
   private readonly requiredDomain = getConfig(this.config, "domain")
-  private readonly client = new GoogleClient(this.webBaseUrl, this.tokenBaseUrl, this.userInfoBaseUrl)
+  private readonly client = new GoogleClient(this.webBaseUrl, this.tokenBaseUrl, this.userInfoBaseUrl, this.redirectUrl)
 
   get authBaseUrl(): string {
     return "https://accounts.google.com"
@@ -37,6 +37,7 @@ export class GoogleAuthProvider implements AuthProvider {
       client_id: this.clientId,
       redirect_uri: callbackUrl,
       scope: "openid email profile",
+      response_type: "code"
     }
     if(this.requiredDomain) params.hd = this.requiredDomain
     const queryParams = stringify(params)
@@ -47,8 +48,8 @@ export class GoogleAuthProvider implements AuthProvider {
     return req.query.code
   }
 
-  async getToken(code: string) {
-    const auth = await this.client.requestAccessToken(code, this.clientId, this.clientSecret)
+  async getToken(code: string, redirectUrl: string) {
+    const auth = await this.client.requestAccessToken(code, this.clientId, this.clientSecret, redirectUrl)
     return auth.access_token
   }
 

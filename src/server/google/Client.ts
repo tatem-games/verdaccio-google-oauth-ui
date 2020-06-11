@@ -16,13 +16,15 @@ export class GoogleClient {
    *
    * [Web application flow](bit.ly/2mNSppX).
    */
-  requestAccessToken = async (code: string, clientId: string, clientSecret: string): Promise<GoogleOAuth> => {
+  requestAccessToken = async (code: string, clientId: string, clientSecret: string, redirectUrl: string): Promise<GoogleOAuth> => {
     const url = this.tokenBaseUrl + "/token"
     const options = {
       method: "POST",
       json: {
         client_id: clientId,
         client_secret: clientSecret,
+        grant_type: 'authorization_code',
+        redirect_uri: redirectUrl
         code,
       },
     } as const

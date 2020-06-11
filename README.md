@@ -1,9 +1,9 @@
 <h1 align="center">
-  📦🔐 Verdaccio GitHub OAuth - With UI Support
+  📦🔐 Verdaccio Google OAuth - With UI Support
 </h1>
 
 <p align="center">
-  A GitHub OAuth Plugin for Verdaccio – <a href="https://www.verdaccio.org">https://www.verdaccio.org</a>
+  A Google OAuth Plugin for Verdaccio – <a href="https://www.verdaccio.org">https://www.verdaccio.org</a>
 </p>
 
 <p align="center">
@@ -34,12 +34,12 @@
 
 <img src="screenshots/authorize.png" align="right" width="270"/>
 
-This is a Verdaccio plugin that offers GitHub OAuth integragtion for both the browser and the command line.
+This is a Verdaccio plugin that offers Google OAuth integragtion for both the browser and the command line.
 
 ### Features
 
 - UI integration with fully functional login and logout. When clicking the login button the user is redirected to GitHub and returns with a working session.
-- Updated usage info and working copy-to-clipboard for setup commands. 
+- Updated usage info and working copy-to-clipboard for setup commands.
 - A small CLI for quick-and-easy configuration.
 
 ### Compatibility
@@ -53,14 +53,16 @@ This is a Verdaccio plugin that offers GitHub OAuth integragtion for both the br
 ### Install
 
 ```
-$ npm install verdaccio-github-oauth-ui
+$ npm install verdaccio-google-oauth-ui
 ```
 
-### GitHub Config
+### Google Config
 
-- Create an OAuth app at https://github.com/settings/developers
+- Create a developer project at https://console.developers.google.com
+- Configure the OAuth consent screen and create a set of OAuth credentials
 - The callback URL should be `YOUR_REGISTRY_URL/-/oauth/callback`
 
+(screenshot to be updated)
 ![](screenshots/github-app.png)
 
 ### Verdaccio Config
@@ -69,15 +71,14 @@ Merge the below options with your existing Verdaccio config:
 
 ```yml
 middlewares:
-  github-oauth-ui:
+  google-oauth-ui:
     enabled: true
 
 auth:
-  github-oauth-ui:
-    org: GITHUB_ORG
+  google-oauth-ui:
     client-id: GITHUB_CLIENT_ID
     client-secret: GITHUB_CLIENT_SECRET
-    enterprise-origin: GITHUB_ENTERPRISE_ORIGIN
+    domain: GOOGLE_DOMAIN
 
 url_prefix: YOUR_REGISTRY_URL
 ```
@@ -85,17 +86,13 @@ url_prefix: YOUR_REGISTRY_URL
 - The configured values can either be the actual value or the name of an environment variable that contains the value.
 - The config props can be specified under either the `middlewares` or the `auth` node. Just make sure, the addon is included under both nodes.
 
-#### `org`
+#### `domain`
 
-Users within this org will be able to authenticate.
+Users within this domain will be able to authenticate.
 
 #### `client-id` and `client-secret`
 
 These values can be obtained from GitHub OAuth app page at https://github.com/settings/developers.
-
-#### `enterprise-origin` (optional)
-
-Set this if you are using GitHub Enterprise. Example: `https://hostname`
 
 #### `url_prefix` (optional)
 
@@ -117,14 +114,11 @@ See the [global-agent](https://github.com/gajus/global-agent#environment-variabl
 
 ### Verdaccio UI
 
-- Click the login button and get redirected to GitHub.
-- Authorize the registry for your user and the configured GitHub org - this only needs to be done once.
+- Click the login button and get redirected to Google.
+- Authorize the registry for your user
 - When completed, you'll be redirected back to the Verdaccio registry.
 
 You are now logged in.
-
-**Important**: Make sure to click the <kbd>Request</kbd> or <kbd>Grant</kbd> button for `read:org` access when prompted to authorize.
-If you accidentally skipped this step, go to https://github.com/settings/applications, find the Verdaccio registry and grant `read:org` access from there.
 
 ### Command Line
 
@@ -133,7 +127,7 @@ If you accidentally skipped this step, go to https://github.com/settings/applica
 The easiest way to configure npm is to use this short command:
 
 ```
-$ npx verdaccio-github-oauth-ui --registry http://localhost:4873
+$ npx verdaccio-google-oauth-ui --registry http://localhost:4873
 ```
 
 #### Option B) Copy commands from the UI
@@ -164,7 +158,7 @@ $ npm whoami --registry http://localhost:4873
 n4bb12
 ```
 
-If you see your GitHub username, you are ready to start installing and publishing packages.
+If you see your Google username, you are ready to start installing and publishing packages.
 
 ## Logout
 
@@ -174,21 +168,4 @@ Click the <kbd>Logout</kbd> button as per usual.
 
 ### Command Line
 
-Unless OAuth access is revoked in the GitHub settings, the token is valid indefinitely.
-
-## Revoke Tokens
-
-To invalidate your active login tokens you need to revoke access on the GitHub OAuth app:
-
-- Go to https://github.com/settings/applications
-- Find your Verdaccio app
-- Click the <kbd>Revoke</kbd> button as shown below
-
-![](screenshots/revoke.png)
-
-If you have created the GitHub OAuth app, you can also revoke access for all users:
-
-- Go to https://github.com/settings/applications
-- Find your Verdaccio app
-- Click the app name
-- On the app detail page click the <kbd>Revoke all user tokens</kbd> button
+Unless OAuth access is revoked in the Google settings, the token is valid indefinitely.
