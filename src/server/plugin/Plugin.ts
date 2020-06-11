@@ -23,7 +23,7 @@ import { ServeStatic } from "./ServeStatic"
  */
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
 
-  private readonly requiredDomain = getConfig(this.config, "domain")
+  private readonly requiredGroup = 'google'
   private readonly provider = new GoogleAuthProvider(this.config)
   private readonly cache = new Cache(this.provider)
   private readonly verdaccio = new Verdaccio(this.config)
