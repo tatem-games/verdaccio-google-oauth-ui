@@ -38,7 +38,7 @@ export class GoogleAuthProvider implements AuthProvider {
       redirect_uri: callbackUrl,
       scope: "openid email profile",
     }
-    if(requiredDomain) params.hd = requiredDomain
+    if(this.requiredDomain) params.hd = this.requiredDomain
     const queryParams = stringify(params)
     return this.authBaseUrl + `/o/oauth2/v2/auth?` + queryParams
   }
