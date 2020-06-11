@@ -24,16 +24,16 @@
     "verdaccio-google-oauth-ui": "dist/cli.js"
   },
   "scripts": {
-    "build": "bash run build",
-    "lint": "bash run lint",
-    "prepack": "bash run clean && bash run build",
+    "build": "sh run build",
+    "lint": "sh run lint",
+    "prepack": "sh run clean && sh run build",
     "start": "verdaccio -c verdaccio.yaml",
     "test": "jest",
-    "test:cli": "bash run oauth-cli-test",
+    "test:cli": "sh run oauthclitest",
     "test:coverage": "jest --collectCoverage && codecov",
     "test:manual": "yarn update && yarn start",
     "test:watch": "jest --watch",
-    "test:whoami": "bash run whoami",
+    "test:whoami": "sh run whoami",
     "update": "yarn prepack && bash run link",
     "watch": "nodemon --watch src --ext ts,css --exec \"yarn update\""
   },
