@@ -68,7 +68,7 @@ export function createTestAuthProvider() {
       return testUsername
     },
     async getGroups(token: string) {
-      return [testRequiredGroup]
+      return ['google']
     },
   }
   return provider

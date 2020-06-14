@@ -3,7 +3,6 @@ import { Plugin } from "src/server/plugin/Plugin"
 import {
   createTestPlugin,
   testOAuthToken,
-  testRequiredGroup,
   testUsername,
 } from "test/utils"
 
@@ -27,7 +26,7 @@ describe("Plugin", () => {
             return token === testOAuthToken ? testUsername : ""
           },
           async getGroups(token: string) {
-            return token === testOAuthToken ? [testRequiredGroup] : []
+            return token === testOAuthToken ? ['google'] : []
           },
         }
       })
