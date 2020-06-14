@@ -7,7 +7,6 @@ import { Plugin } from "src/server/plugin/Plugin"
 import { Verdaccio } from "src/server/verdaccio/Verdaccio"
 
 export const authenticated = "$authenticated"
-export const testRequiredGroup = "TEST_ORG"
 export const testClientId = "TEST_CLIENT_ID"
 export const testClientSecret = "TEST_CLIENT_SECRET"
 export const testUsername = "test-username"
@@ -23,7 +22,6 @@ export const testErrorMessage = "test-error"
 
 export function createTestPluginConfig(config?: any) {
   return {
-    "org": testRequiredGroup,
     "client-id": testClientId,
     "client-secret": testClientSecret,
     ...config,

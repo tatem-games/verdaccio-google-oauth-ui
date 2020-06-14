@@ -15,10 +15,10 @@ describe("AuthCore", () => {
       expect(user.name).toBe(testUsername)
     })
 
-    it("user groups includes the configured org", () => {
+    it("user groups includes the google org", () => {
       const user = core.createUser(testUsername)
-      expect(user.groups).toContain(testRequiredGroup)
-      expect(user.real_groups).toContain(testRequiredGroup)
+      expect(user.groups).toContain('google')
+      expect(user.real_groups).toContain('google')
     })
 
   })
