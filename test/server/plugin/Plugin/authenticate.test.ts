@@ -1,4 +1,4 @@
-import { GitHubAuthProvider } from "src/server/github/AuthProvider"
+import { GoogleAuthProvider } from "src/server/google/AuthProvider"
 import { Plugin } from "src/server/plugin/Plugin"
 import {
   createTestPlugin,
@@ -7,10 +7,10 @@ import {
   testUsername,
 } from "test/utils"
 
-jest.mock("src/server/github/AuthProvider")
+jest.mock("src/server/google/AuthProvider")
 
 // tslint:disable-next-line: variable-name
-const AuthProvider: GitHubAuthProvider & jest.MockInstance<any, any> = GitHubAuthProvider as any
+const AuthProvider: GoogleAuthProvider & jest.MockInstance<any, any> = GoogleAuthProvider as any
 
 describe("Plugin", () => {
   describe("authenticate", () => {
