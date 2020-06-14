@@ -31,10 +31,10 @@ describe("Config", () => {
       })
     })
 
-    it("treats 'enterprise-origin' as optional", () => {
+    it("treats 'domain' as optional", () => {
       shouldSucceed({
         auth: {
-          [pluginName]: { ...createTestPluginConfig(), ["'enterprise-origin'"]: null },
+          [pluginName]: { ...createTestPluginConfig(), ["'domain'"]: null },
         },
         middlewares: {
           [pluginName]: { enabled: true },
@@ -67,16 +67,6 @@ describe("Config", () => {
       })
     })
 
-    it("throws an error if 'org' is missing", () => {
-      shouldFail({
-        auth: {
-          [pluginName]: { ...createTestPluginConfig(), ["org"]: null },
-        },
-        middlewares: {
-          [pluginName]: { enabled: true },
-        },
-      })
-    })
 
     it("throws an error if 'client-id' is missing", () => {
       shouldFail({
