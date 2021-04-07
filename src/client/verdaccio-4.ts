@@ -1,7 +1,8 @@
-import { getUsageInfo, init, isLoggedIn } from './plugin/index.js';
+import {getMacInfo, getPublishInfo, getWindowsInfo, init, isLoggedIn} from './plugin/index.js';
 
 const helpCardUsageInfoSelector = '#help-card .MuiCardContent-root span';
 const dialogUsageInfoSelector = '#registryInfo--dialog-container .MuiDialogContent-root .MuiTypography-root span';
+const tabSelector = '#registryInfo--dialog-container .MuiDialogContent-root .MuiTabs-flexContainer .MuiTab-wrapper';
 const randomClass = 'Os1waV6BSoZQKfFwNlIwS';
 
 // copied from here as it needs to be the same behaviour
@@ -19,15 +20,14 @@ export function copyToClipboard(text: string) {
   document.body.removeChild(node);
 }
 
-function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElement) => boolean): void {
-  const usageInfo = getUsageInfo();
+function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElement) => boolean, findUsageInfo: (node: HTMLElement) => string | undefined): void {
   const loggedIn = isLoggedIn();
 
   const infoElements: NodeListOf<HTMLSpanElement> = document.querySelectorAll(selector);
-  const firstUsageInfoEl = Array.prototype.find.call(infoElements, findPredicate);
-  const hasInjectedElement = !!Array.prototype.find.call(infoElements, (node: HTMLElement) =>
-    node.parentElement!.classList.contains(randomClass)
-  );
+  const elements = Array.prototype.slice.call(infoElements) as Array<HTMLSpanElement>;
+  const firstUsageInfoEl = elements.find(findPredicate);
+  const usageInfo = elements.map(findUsageInfo).filter(info => info)[0];
+  const hasInjectedElement = elements.find((node: HTMLElement) => node.parentElement!.classList.contains(randomClass));
 
   // We can't find any element related to usage instructions,
   // or we have already injected elements
@@ -35,8 +35,8 @@ function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElemen
     return;
   }
 
-  const cachedParent: HTMLDivElement | null = firstUsageInfoEl.parentElement;
-  if (cachedParent) {
+  const cachedParent: HTMLDivElement | null = firstUsageInfoEl.parentElement as HTMLDivElement;
+  if (cachedParent && usageInfo) {
     usageInfo
       .split('\n')
       .reverse()
@@ -48,14 +48,24 @@ function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElemen
         clonedNode.classList.add(randomClass);
         textElem.innerText = info;
         copyEl.style.visibility = loggedIn ? 'visible' : 'hidden';
-        copyEl.onclick = e => {
-          e.preventDefault();
-          e.stopPropagation();
-          copyToClipboard(info);
-        };
+        if (info.startsWith('npm') || info.startsWith('echo')) {
+          copyEl.onclick = e => {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(info);
+          };
+        } else {
+          textElem.style.fontSize = '1.5rem';
+          textElem.style.height = '40px';
+          clonedNode.removeChild(copyEl);
+        }
 
         cachedParent.insertAdjacentElement('afterend', clonedNode);
       });
+    const parent = cachedParent.parentElement;
+    if (parent) {
+      parent.removeChild(cachedParent);
+    }
   }
 
   infoElements.forEach(node => {
@@ -70,16 +80,30 @@ function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElemen
   });
 }
 
+function changeTabs() {
+  const tabs: NodeListOf<HTMLSpanElement> = document.querySelectorAll(tabSelector);
+  tabs[0].innerText = "Windows";
+  tabs[1].innerText = "Mac";
+  tabs[2].innerText = "Publish";
+}
+
 function updateUsageInfo() {
-  modifyUsageInfoNodes(helpCardUsageInfoSelector, node => node.innerText.includes('adduser'));
+  modifyUsageInfoNodes(helpCardUsageInfoSelector, node => node.innerText.includes('adduser'), node => getPublishInfo());
   modifyUsageInfoNodes(
     dialogUsageInfoSelector,
     node =>
       !!node.innerText.match(
         // This checks for an element showing instructions to set the registry URL
         /((npm|pnpm) set|(yarn) config set)/
-      )
+      ),
+    node => {
+      if (node.innerText.startsWith('npm')) return getWindowsInfo()
+      if (node.innerText.startsWith('pnpm')) return getMacInfo()
+      if (node.innerText.startsWith('yarn')) return getPublishInfo()
+      return undefined;
+    }
   );
+  changeTabs();
 }
 
 init({
