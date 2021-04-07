@@ -1,8 +1,10 @@
 import { Config, RemoteUser } from '@verdaccio/types';
+import * as jwt from 'jsonwebtoken';
 
 import { getSecurity } from './options';
 
 import { Auth, User } from './index';
+import {SignOptions} from "jsonwebtoken";
 
 const getMajorVersion = (config: Config): number => {
   return +config.user_agent[10];
@@ -40,7 +42,7 @@ export class Verdaccio {
   }
 
   private async issueJWT(user: User): Promise<string> {
-    const jWTSignOptions = getSecurity(this.config).web.sign;
-    return this.auth.jwtEncrypt(user, jWTSignOptions);
+    const jWTSignOptions = getSecurity(this.config).web.sign as SignOptions;
+    return jwt.sign(user, this.config.secret, jWTSignOptions);
   }
 }

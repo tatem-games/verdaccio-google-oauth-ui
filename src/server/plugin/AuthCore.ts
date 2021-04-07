@@ -34,14 +34,22 @@ export class AuthCore {
   }
 
   public async canAccess(user: User, requiredGroups: string[]): Promise<boolean> {
+    if (!user.name) {
+      return false;
+    }
     const groups = await this.provider.getGroups(user.google_token);
     requiredGroups.concat(groups);
     const allow = requiredGroups.every(g => user.real_groups.includes(g));
+    const googleUser = await this.provider.getUser(user.google_token);
+    console.log('google');
+    console.log(googleUser);
 
-    if (!allow) {
-      console.error(this.getDeniedMessage(user.name || 'anonymous', groups));
+    if (allow && googleUser.email == user.name) {
+      return true;
     }
-    return allow;
+    const error = new Error(this.getDeniedMessage(user.name, groups));
+    console.error(error);
+    return false;
   }
 
   private getDeniedMessage(username: string, groups: string[]): string {
