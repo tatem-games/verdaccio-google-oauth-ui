@@ -1,7 +1,7 @@
 import { Config as VerdaccioConfig } from '@verdaccio/types';
 import { get } from 'lodash';
 
-import { pluginName } from '../constants';
+import { pluginName } from '../../constants';
 
 export interface PluginConfig {
   'client-id': string;

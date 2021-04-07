@@ -14,7 +14,9 @@ import { Auth, Verdaccio } from '../verdaccio';
 
 import { AuthCore } from './AuthCore';
 import { Cache } from './Cache';
-import { Config, getConfig, validateConfig } from './Config';
+import { Config, validateConfig } from './Config';
+import { PatchHtml } from './PatchHtml';
+import { ServeStatic } from './ServeStatic';
 
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
   private readonly requiredGroup = 'google';
@@ -35,6 +37,8 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     this.verdaccio.setAuth(auth);
 
     const children = [
+      new ServeStatic(),
+      new PatchHtml(this.verdaccio),
       new WebFlow(this.verdaccio, this.core, this.provider),
       new CliFlow(this.verdaccio, this.core, this.provider),
     ];

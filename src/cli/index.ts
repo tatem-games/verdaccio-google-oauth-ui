@@ -24,7 +24,7 @@ const successPage = buildStatusPage(`
 
 const server = express()
   .get('/', (req, res) => {
-    const token = decodeURIComponent(req.query.token as string);
+    const token = decodeURIComponent(req.query.token);
     save(registry, token);
     res.setHeader('Content-Type', 'text/html');
     res.send(successPage);

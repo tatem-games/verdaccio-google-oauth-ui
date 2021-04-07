@@ -14,7 +14,7 @@ export function getConfigFile() {
   return npmConfig.userconfig;
 }
 
-export function getSaveCommands(registry: string, token: string) {
+export function getSaveCommands(registry, token) {
   const url = new URL(registry);
   // restore trailing slash if missing
   const pathname = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
@@ -25,6 +25,6 @@ export function getSaveCommands(registry: string, token: string) {
   ];
 }
 
-export function save(registry: string, token: string) {
+export function save(registry, token) {
   getSaveCommands(registry, token).forEach(command => execSync(command));
 }

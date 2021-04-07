@@ -1,11 +1,11 @@
 import { IPluginMiddleware } from '@verdaccio/types';
 import { Application, Handler, Request } from 'express';
 
-import { authorizePath, callbackPath } from '../constants';
+import { authorizePath, callbackPath } from '../../constants';
 import { AuthCore } from '../plugin/AuthCore';
 import { AuthProvider } from '../plugin/AuthProvider';
 import { Verdaccio } from '../verdaccio';
-import { buildStatusPage } from '../statusPage';
+import { buildStatusPage } from '../../statusPage';
 
 export const errorPage = buildStatusPage(`
   <h1>Access Denied</h1>
