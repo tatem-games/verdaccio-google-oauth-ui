@@ -1,29 +1,28 @@
 import { stringify } from 'querystring';
 
-import { intersection } from 'lodash';
-
 import { User, Verdaccio } from '../verdaccio';
 
-import { Config } from './Config';
+import { AuthProvider } from './AuthProvider';
 
 export class AuthCore {
-  private readonly requiredGroup = 'google';
+  private readonly groups = ['google', '$all', '$authenticated', '@all', '@authenticated', 'all'];
 
-  public constructor(private readonly verdaccio: Verdaccio, private readonly config: Config) {}
+  public constructor(private readonly verdaccio: Verdaccio, private readonly provider: AuthProvider) {}
 
-  private createUser(username: string): User {
+  public createUser(username: string, token: string): User {
     return {
       name: username,
-      groups: [this.requiredGroup],
-      real_groups: [this.requiredGroup],
+      google_token: token,
+      groups: this.groups,
+      real_groups: this.groups,
     };
   }
 
   public async createUiCallbackUrl(username: string, token: string): Promise<string> {
-    const user: User = this.createUser(username);
+    const user: User = this.createUser(username, token);
 
     const uiToken = await this.verdaccio.issueUiToken(user);
-    const npmToken = await this.verdaccio.issueNpmToken(username, token);
+    const npmToken = await this.verdaccio.issueNpmToken(user);
 
     const query = { username, uiToken, npmToken };
     return '/?' + stringify(query);
@@ -34,21 +33,18 @@ export class AuthCore {
     return true;
   }
 
-  public canAccess(username: string, groups: string[], requiredGroups: string[]): boolean {
-    // check user here
-    if (requiredGroups.includes('$authenticated')) {
-      requiredGroups.push(this.requiredGroup);
-    }
-    const grantedAccess = intersection(groups, requiredGroups);
+  public async canAccess(user: User, requiredGroups: string[]): Promise<boolean> {
+    const groups = await this.provider.getGroups(user.google_token);
+    requiredGroups.concat(groups);
+    const allow = requiredGroups.every(g => user.real_groups.includes(g));
 
-    const allow = grantedAccess.length === requiredGroups.length;
     if (!allow) {
-      console.error(this.getDeniedMessage(username));
+      console.error(this.getDeniedMessage(user.name || 'anonymous', groups));
     }
     return allow;
   }
 
-  private getDeniedMessage(username: string): string {
-    return `Access denied: User "${username}" is not a member of "${this.requiredGroup}"`;
+  private getDeniedMessage(username: string, groups: string[]): string {
+    return `Access denied: User "${username}" is not a member of "${groups.join(', ')}"`;
   }
 }

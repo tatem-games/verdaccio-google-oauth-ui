@@ -16,4 +16,6 @@ export interface IAuth extends IBasicAuth<Config>, IAuthWebUI {
 }
 
 export type Auth = IAuth;
-export type User = RemoteUser;
+export type User = RemoteUser & {
+  google_token: string;
+};

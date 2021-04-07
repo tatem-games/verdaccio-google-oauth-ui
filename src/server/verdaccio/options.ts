@@ -19,7 +19,7 @@ const defaultSecurity: Security = {
 
 export function getSecurity(config: Config): Security {
   if (config.security) {
-    config.security.api.legacy = true;
+    config.security.api.legacy = false;
     config.security.web.sign.expiresIn = '7d';
     return config.security;
   }

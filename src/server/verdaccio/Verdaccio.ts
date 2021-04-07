@@ -31,8 +31,8 @@ export class Verdaccio {
     this.auth = auth;
   }
 
-  public async issueNpmToken(username: string, token: string): Promise<string> {
-    return this.encrypt(username + ':' + token);
+  public async issueNpmToken(user: User): Promise<string> {
+    return this.issueJWT(user);
   }
 
   public async issueUiToken(user: User): Promise<string> {
@@ -42,9 +42,5 @@ export class Verdaccio {
   private async issueJWT(user: User): Promise<string> {
     const jWTSignOptions = getSecurity(this.config).web.sign;
     return this.auth.jwtEncrypt(user, jWTSignOptions);
-  }
-
-  private encrypt(text: string): string {
-    return this.auth.aesEncrypt(new Buffer(text)).toString('base64');
   }
 }

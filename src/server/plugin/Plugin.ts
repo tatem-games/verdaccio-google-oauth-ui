@@ -10,7 +10,7 @@ import { Application } from 'express';
 
 import { CliFlow, WebFlow } from '../flows';
 import { GoogleAuthProvider } from '../google';
-import { Auth, Verdaccio } from '../verdaccio';
+import {Auth, User, Verdaccio} from '../verdaccio';
 
 import { AuthCore } from './AuthCore';
 import { Cache } from './Cache';
@@ -30,7 +30,7 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     this.provider = new GoogleAuthProvider(this.config);
     this.cache = new Cache(this.provider);
     this.verdaccio = new Verdaccio(this.config);
-    this.core = new AuthCore(this.verdaccio, this.config);
+    this.core = new AuthCore(this.verdaccio, this.provider);
   }
 
   public register_middlewares(app: Application, auth: Auth): void {
@@ -58,10 +58,11 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     }
   }
 
-  public allow_access(user: RemoteUser, pkg: PackageAccess, callback: AuthAccessCallback): void {
+  public async allow_access(user: User, pkg: PackageAccess, callback: AuthAccessCallback): Promise<void> {
     const requiredGroups = [...(pkg.access || [])];
+    console.log(user);
 
-    if (this.core.canAccess(user.name || 'anonymous', user.groups, requiredGroups)) {
+    if (await this.core.canAccess(user, requiredGroups)) {
       callback(null, true);
     } else {
       callback(null, false);

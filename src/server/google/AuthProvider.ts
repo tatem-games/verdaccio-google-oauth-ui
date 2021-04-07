@@ -6,6 +6,7 @@ import { AuthProvider } from '../plugin/AuthProvider';
 import { Config, getConfig } from '../plugin/Config';
 
 import { GoogleClient } from './Client';
+import { GoogleUser } from './User';
 
 export class GoogleAuthProvider implements AuthProvider {
   private readonly clientId;
@@ -60,9 +61,12 @@ export class GoogleAuthProvider implements AuthProvider {
     return auth.access_token;
   }
 
+  public async getUser(token: string): Promise<GoogleUser> {
+    return await this.client.requestUser(token);
+  }
+
   public async getUsername(token: string): Promise<string> {
-    const user = await this.client.requestUser(token);
-    return user.email;
+    return (await this.getUser(token)).email;
   }
 
   public async getGroups(token: string): Promise<string[]> {
