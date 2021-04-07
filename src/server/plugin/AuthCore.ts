@@ -40,16 +40,17 @@ export class AuthCore {
     const groups = await this.provider.getGroups(user.google_token);
     requiredGroups.concat(groups);
     const allow = requiredGroups.every(g => user.real_groups.includes(g));
-    const googleUser = await this.provider.getUser(user.google_token);
-    console.log('google');
-    console.log(googleUser);
+    try {
+      const googleUser = await this.provider.getUser(user.google_token);
+      if (allow && googleUser.email == user.name) {
+        return true;
+      }
 
-    if (allow && googleUser.email == user.name) {
-      return true;
+      console.error(this.getDeniedMessage(user.name, groups));
+      return false;
+    } catch (e) {
+      return false;
     }
-    const error = new Error(this.getDeniedMessage(user.name, groups));
-    console.error(error);
-    return false;
   }
 
   private getDeniedMessage(username: string, groups: string[]): string {

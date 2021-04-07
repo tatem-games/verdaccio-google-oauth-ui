@@ -17,6 +17,7 @@ import { Cache } from './Cache';
 import { Config, validateConfig } from './Config';
 import { PatchHtml } from './PatchHtml';
 import { ServeStatic } from './ServeStatic';
+import {getNotFound} from "@verdaccio/commons-api";
 
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
   private readonly requiredGroup = 'google';
@@ -58,14 +59,13 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     }
   }
 
-  public async allow_access(user: User, pkg: PackageAccess, callback: AuthAccessCallback): Promise<void> {
+  public async allow_access(user: User, pkg: PackageAccess, callback: any): Promise<void> {
     const requiredGroups = [...(pkg.access || [])];
-    console.log(user);
 
     if (await this.core.canAccess(user, requiredGroups)) {
       callback(null, true);
     } else {
-      callback(null, false);
+      callback(getNotFound('Access denided'));
     }
   }
 }
