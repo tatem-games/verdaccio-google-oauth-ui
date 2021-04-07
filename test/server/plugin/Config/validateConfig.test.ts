@@ -1,12 +1,11 @@
-import { pluginName } from "src/constants"
-import { validateConfig } from "src/server/plugin/Config"
-import { createTestPluginConfig } from "test/utils"
+import { pluginName } from 'src/constants';
+import { validateConfig } from 'src/server/plugin/Config';
+import { createTestPluginConfig } from 'test/utils';
 
-describe("Config", () => {
-  describe("validateConfig", () => {
-
+describe('Config', () => {
+  describe('validateConfig', () => {
     function shouldSucceed(config: any) {
-      validateConfig(config)
+      validateConfig(config);
     }
 
     it("accepts an empty 'auth' node as long as it is enabled", () => {
@@ -17,8 +16,8 @@ describe("Config", () => {
         middlewares: {
           [pluginName]: createTestPluginConfig(),
         },
-      })
-    })
+      });
+    });
 
     it("accepts an empty 'middlewares' node as long as it is enabled", () => {
       shouldSucceed({
@@ -28,8 +27,8 @@ describe("Config", () => {
         middlewares: {
           [pluginName]: { enabled: true },
         },
-      })
-    })
+      });
+    });
 
     it("treats 'domain' as optional", () => {
       shouldSucceed({
@@ -39,13 +38,13 @@ describe("Config", () => {
         middlewares: {
           [pluginName]: { enabled: true },
         },
-      })
-    })
+      });
+    });
 
     function shouldFail(config: any) {
       try {
-        validateConfig(config)
-        fail()
+        validateConfig(config);
+        fail();
       } catch (error) {
         // expected
       }
@@ -56,39 +55,37 @@ describe("Config", () => {
         middlewares: {
           [pluginName]: createTestPluginConfig(),
         },
-      })
-    })
+      });
+    });
 
     it("throws an error if 'middlewares' node is not enabled", () => {
       shouldFail({
         auth: {
           [pluginName]: createTestPluginConfig(),
         },
-      })
-    })
-
+      });
+    });
 
     it("throws an error if 'client-id' is missing", () => {
       shouldFail({
         auth: {
-          [pluginName]: { ...createTestPluginConfig(), ["client-id"]: null },
+          [pluginName]: { ...createTestPluginConfig(), ['client-id']: null },
         },
         middlewares: {
           [pluginName]: { enabled: true },
         },
-      })
-    })
+      });
+    });
 
     it("throws an error if 'client-secret' is missing", () => {
       shouldFail({
         auth: {
-          [pluginName]: { ...createTestPluginConfig(), ["client-secret"]: null },
+          [pluginName]: { ...createTestPluginConfig(), ['client-secret']: null },
         },
         middlewares: {
           [pluginName]: { enabled: true },
         },
-      })
-    })
-
-  })
-})
+      });
+    });
+  });
+});

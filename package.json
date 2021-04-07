@@ -17,15 +17,17 @@
   "license": "MIT",
   "author": "Alastair McFarlane",
   "files": [
-    "dist"
+    "lib"
   ],
-  "main": "dist/server.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "bin": {
-    "verdaccio-google-oauth-ui": "dist/cli.js"
+    "verdaccio-google-oauth-ui": "lib/cli/cli.js"
   },
   "scripts": {
-    "build": "npm run build:types",
-    "build:types": "tsc",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "tsc --p tsconfig.server.json",
+    "build:client": "tsc --p tsconfig.client.json && copy src\\client\\verdaccio-4.css lib\\public\\verdaccio-4.css",
     "lint": "eslint \"**/*.{js,ts}\"",
     "lint:fix": "eslint --fix \"**/*.{js,ts}\"",
     "prepack": "sh run clean && sh run build",

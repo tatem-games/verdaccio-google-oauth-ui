@@ -6,5 +6,5 @@
     "target": "es2018",
     "types": ["node"]
   },
-  "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.server.json"
 }

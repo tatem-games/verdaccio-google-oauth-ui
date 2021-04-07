@@ -1,4 +1,4 @@
-import { getUsageInfo, init, isLoggedIn } from './plugin';
+import { getUsageInfo, init, isLoggedIn } from './plugin/index.js';
 
 const helpCardUsageInfoSelector = '#help-card .MuiCardContent-root span';
 const dialogUsageInfoSelector = '#registryInfo--dialog-container .MuiDialogContent-root .MuiTypography-root span';

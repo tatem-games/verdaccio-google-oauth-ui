@@ -34,8 +34,8 @@ export class WebFlow implements IPluginMiddleware<any> {
   ) {}
 
   public register_middlewares(app: Application): void {
-    app.get(WebFlow.getAuthorizePath(), this.authorize);
-    app.get(WebFlow.getCallbackPath(), this.callback);
+    app.get(WebFlow.getAuthorizePath(), this.authorize.bind(this));
+    app.get(WebFlow.getCallbackPath(), this.callback.bind(this));
   }
 
   public async authorize(req, res, next) {

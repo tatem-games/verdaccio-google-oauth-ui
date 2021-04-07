@@ -13,21 +13,22 @@ import { Verdaccio } from '../verdaccio';
 export class PatchHtml implements IPluginMiddleware<any> {
   private readonly scriptTag;
   private readonly styleTag;
+  private readonly exports = '<script>var exports = {};</script>';
   private readonly headWithStyle;
   private readonly bodyWithScript;
 
   public constructor(private readonly verdaccio: Verdaccio) {
-    this.scriptTag = `<script src="${staticPath}/verdaccio-${this.verdaccio.majorVersion}.js"></script>`;
+    this.scriptTag = `<script type="module" src="${staticPath}/verdaccio-${this.verdaccio.majorVersion}.js"></script>`;
     this.styleTag = `<style>${readFileSync(`${publicRoot}/verdaccio-${this.verdaccio.majorVersion}.css`)}</style>`;
     this.headWithStyle = [this.styleTag, '</head>'].join('');
-    this.bodyWithScript = [this.scriptTag, '</body>'].join('');
+    this.bodyWithScript = [this.exports, this.scriptTag, '</body>'].join('');
   }
 
   /**
    * IPluginMiddleware
    */
   public register_middlewares(app: Application): void {
-    app.use(this.patchResponse);
+    app.use(this.patchResponse.bind(this));
   }
 
   /**

@@ -10,7 +10,7 @@ export class ServeStatic implements IPluginMiddleware<any> {
   /**
    * IPluginMiddleware
    */
-  register_middlewares(app: Application) {
+  public register_middlewares(app: Application): void {
     app.use(staticPath, expressServeStatic(publicRoot));
   }
 }

@@ -1,5 +1,4 @@
 import { pluginName } from '../constants';
-import { logger } from '../logger';
 
 export function getUsageInfo() {
   return [
@@ -15,5 +14,5 @@ export function getUsageInfo() {
 }
 
 export function printUsage() {
-  getUsageInfo().forEach(line => logger.log(line));
+  getUsageInfo().forEach(line => console.log(line));
 }

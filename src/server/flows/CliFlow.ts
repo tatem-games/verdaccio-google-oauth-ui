@@ -25,8 +25,8 @@ export class CliFlow implements IPluginMiddleware<any> {
    * IPluginMiddleware
    */
   public register_middlewares(app: Application): void {
-    app.get(cliAuthorizeUrl, this.authorize);
-    app.get(pluginCallbackeUrl, this.callback);
+    app.get(cliAuthorizeUrl, this.authorize.bind(this));
+    app.get(pluginCallbackeUrl, this.callback.bind(this));
   }
 
   public async authorize(req, res, next) {

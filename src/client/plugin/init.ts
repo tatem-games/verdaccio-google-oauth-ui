@@ -1,7 +1,6 @@
-import { loginHref, logoutHref } from '../config';
-
-import { clearCredentials, Credentials, isLoggedIn, saveCredentials, validateCredentials } from './credentials';
-import { interruptClick, parseQueryParams, retry } from './lib';
+import { loginHref, logoutHref } from './config.js';
+import { clearCredentials, Credentials, isLoggedIn, saveCredentials, validateCredentials } from './credentials.js';
+import { interruptClick, parseQueryParams, retry } from './lib.js';
 
 /**
  * Change the current URL to only the current pathname and reload.
