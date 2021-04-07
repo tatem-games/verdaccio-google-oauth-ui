@@ -7,17 +7,17 @@ import {
   RemoteUser,
 } from '@verdaccio/types';
 import { Application } from 'express';
+import { getNotFound } from '@verdaccio/commons-api';
 
 import { CliFlow, WebFlow } from '../flows';
 import { GoogleAuthProvider } from '../google';
-import {Auth, User, Verdaccio} from '../verdaccio';
+import { Auth, User, Verdaccio } from '../verdaccio';
 
 import { AuthCore } from './AuthCore';
 import { Cache } from './Cache';
 import { Config, validateConfig } from './Config';
 import { PatchHtml } from './PatchHtml';
 import { ServeStatic } from './ServeStatic';
-import {getNotFound} from "@verdaccio/commons-api";
 
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
   private readonly requiredGroup = 'google';

@@ -1,10 +1,10 @@
 import { Config, RemoteUser } from '@verdaccio/types';
 import * as jwt from 'jsonwebtoken';
+import { SignOptions } from 'jsonwebtoken';
 
 import { getSecurity } from './options';
 
 import { Auth, User } from './index';
-import {SignOptions} from "jsonwebtoken";
 
 const getMajorVersion = (config: Config): number => {
   return +config.user_agent[10];
