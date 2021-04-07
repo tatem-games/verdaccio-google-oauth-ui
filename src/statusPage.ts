@@ -1,6 +1,6 @@
-import { pluginName } from "./constants"
+import { pluginName } from './constants';
 
-export function buildStatusPage(body: string) {
+export const buildStatusPage = (body: string): string => {
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -38,5 +38,5 @@ export function buildStatusPage(body: string) {
       ${body}
     </div>
   </body>
-</html>`
-}
+</html>`;
+};

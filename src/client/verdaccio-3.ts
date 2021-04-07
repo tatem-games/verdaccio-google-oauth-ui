@@ -1,16 +1,16 @@
-import { getUsageInfo, init } from "./plugin"
+import { getUsageInfo, init } from './plugin';
 
 function updateUsageInfo() {
-  const info = getUsageInfo()
-  const element = document.querySelector("[class*='header__headerWrap'] figure") as HTMLElement
+  const info = getUsageInfo();
+  const element = document.querySelector("[class*='header__headerWrap'] figure") as HTMLElement;
 
   if (element && element.innerText !== info) {
-    element.innerText = info
+    element.innerText = info;
   }
 }
 
 init({
-  loginButton: ".header-button-login",
-  logoutButton: ".header-button-logout",
+  loginButton: '.header-button-login',
+  logoutButton: '.header-button-logout',
   updateUsageInfo,
-})
+});

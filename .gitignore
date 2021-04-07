@@ -1,6 +1,4 @@
-*.log
-coverage/
-dist/
-htpasswd
-node_modules/
-storage/
+npm-debug.log*
+node_modules
+/lib/
+.idea

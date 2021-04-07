@@ -1,0 +1,6 @@
+*.log
+coverage/
+dist/
+htpasswd
+node_modules/
+storage/

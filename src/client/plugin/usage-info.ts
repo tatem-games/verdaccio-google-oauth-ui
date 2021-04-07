@@ -4,19 +4,17 @@
 //
 
 export function getUsageInfo() {
-  const username = localStorage.getItem("username")
+  const username = localStorage.getItem('username');
   if (!username) {
-    return "Click the login button to authenticate with Google."
+    return 'Click the login button to authenticate with Google.';
   }
 
   const configBase = (window as any).VERDACCIO_API_URL
-    ? (window as any).VERDACCIO_API_URL
-      .replace(/^https?:/, "")
-      .replace(/-\/verdaccio\/$/, "")
-    : `//${location.host}${location.pathname}`
-  const authToken = localStorage.getItem("npm")
+    ? (window as any).VERDACCIO_API_URL.replace(/^https?:/, '').replace(/-\/verdaccio\/$/, '')
+    : `//${location.host}${location.pathname}`;
+  const authToken = localStorage.getItem('npm');
   return [
     `npm config set ${configBase}:_authToken "${authToken}"`,
     `npm config set ${configBase}:always-auth true`,
-  ].join("\n")
+  ].join('\n');
 }
