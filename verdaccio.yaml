@@ -15,19 +15,24 @@ web:
 
 # To use `npm audit` uncomment the following section
 middlewares:
-  audit:
-    enabled: true
   google-oauth-ui:
     enabled: true
 
 auth:
   google-oauth-ui:
     domain: GOOGLE_DOMAIN # required, people within this org will be able to authenticate
-    client-id: GITHUB_CLIENT_ID # required
-    client-secret: GITHUB_CLIENT_SECRET # required
-    # enterprise-origin: GITHUB_ENTERPRISE_ORIGIN # optional, set this if you are using github enterprise
-  htpasswd:
-    file: ./htpasswd
+    client-id: GOOGLE_CLIENT_ID # required
+    client-secret: GOOGLE_CLIENT_SECRET # required
+
+security:
+  api:
+    legacy: false
+    jwt:
+      sign:
+        expiresIn: 7d
+  web:
+    sign:
+      expiresIn: 7d
 
 # a list of other known repositories we can talk to
 uplinks:
@@ -39,6 +44,7 @@ packages:
     # scoped packages
     access: $authenticated
     publish: $authenticated
+    unpublish: $authenticated
     proxy: npmjs
 
   "**":
@@ -52,6 +58,7 @@ packages:
     # allow all known users to publish packages
     # (anyone can register by default, remember?)
     publish: $authenticated
+    unpublish: $authenticated
 
     # if package is not available locally, proxy requests to 'npmjs' registry
     proxy: npmjs
