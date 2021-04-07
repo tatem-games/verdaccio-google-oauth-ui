@@ -1,4 +1,4 @@
-export const pluginName = 'google-oauth';
+export const pluginName = 'google-oauth-ui';
 export const publicRoot = __dirname + '/public';
 export const staticPath = '/-/static';
 export const authorizePath = '/-/oauth/authorize';
