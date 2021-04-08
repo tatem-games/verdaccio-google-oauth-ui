@@ -1,6 +1,6 @@
 {
-  "name": "verdaccio-google-oauth-ui",
-  "version": "0.1.2",
+  "name": "@tatem-games/verdaccio-google-oauth-ui",
+  "version": "0.2.0",
   "keywords": [
     "google",
     "login",
@@ -11,9 +11,7 @@
     "registry",
     "verdaccio"
   ],
-  "homepage": "https://github.com/alitheg/verdaccio-google-oauth-ui/blob/master/README.md",
-  "bugs": "https://github.com/alitheg/verdaccio-google-oauth-ui/issues",
-  "repository": "github:alitheg/verdaccio-google-oauth-ui",
+  "repository": "github:tatem-games/verdaccio-google-oauth-ui",
   "license": "MIT",
   "author": "Alastair McFarlane",
   "files": [
@@ -30,7 +28,6 @@
     "build:client": "tsc --p tsconfig.client.json && copy src\\client\\verdaccio-4.css lib\\public\\verdaccio-4.css",
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "eslint --fix \"**/*.ts\"",
-    "prepack": "sh run clean && sh run build",
     "start": "verdaccio -c verdaccio.yaml",
     "test": "jest",
     "test:cli": "sh run oauthclitest",
@@ -75,7 +72,7 @@
     "node": ">=10"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npm.pkg.github.com"
   },
   "$schema": "http://json.schemastore.org/package"
 }
