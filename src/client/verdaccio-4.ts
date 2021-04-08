@@ -1,8 +1,9 @@
 import {getMacInfo, getPublishInfo, getWindowsInfo, init, isLoggedIn} from './plugin/index.js';
 
-const helpCardUsageInfoSelector = '#help-card .MuiCardContent-root span';
+const helpCardUsageInfoSelector = '#help-card > div.MuiCardContent-root > div > span';
 const dialogUsageInfoSelector = '#registryInfo--dialog-container .MuiDialogContent-root .MuiTypography-root span';
 const tabSelector = '#registryInfo--dialog-container .MuiDialogContent-root .MuiTabs-flexContainer .MuiTab-wrapper';
+const labelSelector = '#help-card > div.MuiCardContent-root > span';
 const randomClass = 'Os1waV6BSoZQKfFwNlIwS';
 
 // copied from here as it needs to be the same behaviour
@@ -20,7 +21,7 @@ export function copyToClipboard(text: string) {
   document.body.removeChild(node);
 }
 
-function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElement) => boolean, findUsageInfo: (node: HTMLElement) => string | undefined): void {
+function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElement, i: number) => boolean, findUsageInfo: (node: HTMLElement) => string | undefined): void {
   const loggedIn = isLoggedIn();
 
   const infoElements: NodeListOf<HTMLSpanElement> = document.querySelectorAll(selector);
@@ -55,8 +56,8 @@ function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElemen
             copyToClipboard(info);
           };
         } else {
-          textElem.style.fontSize = '1.5rem';
-          textElem.style.height = '40px';
+          textElem.style.fontSize = '1.2rem';
+          textElem.style.height = '25px';
           clonedNode.removeChild(copyEl);
         }
 
@@ -82,13 +83,57 @@ function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElemen
 
 function changeTabs() {
   const tabs: NodeListOf<HTMLSpanElement> = document.querySelectorAll(tabSelector);
+  if (tabs.length != 3) return;
   tabs[0].innerText = "Windows";
   tabs[1].innerText = "Mac";
   tabs[2].innerText = "Publish";
 }
 
+function changeLabels() {
+  const tabs: NodeListOf<HTMLSpanElement> = document.querySelectorAll(labelSelector);
+  if (tabs.length != 3) return;
+
+  tabs[0].innerText = "Windows";
+  const windowsNode = tabs[0].nextSibling as HTMLDivElement;
+  setupNode(windowsNode, getWindowsInfo());
+
+  tabs[1].innerText = "Mac";
+  const macNode = tabs[1].nextSibling as HTMLDivElement;
+  setupNode(macNode, getMacInfo());
+
+  tabs[2].innerText = "Publish";
+  tabs[2].className = tabs[1].className;
+
+  const parent = tabs[2].parentElement;
+  if (!parent) return;
+  const elements = Array.prototype.slice.call(parent.childNodes) as Array<HTMLSpanElement>;
+  const hasInjectedElement = elements.find((node: HTMLElement) => node.classList.contains(randomClass));
+  if (hasInjectedElement) return;
+
+  getPublishInfo()
+    .split('\n')
+    .forEach(info => {
+      const clonedNode = macNode.cloneNode(true) as HTMLDivElement;
+      setupNode(clonedNode, info);
+      clonedNode.classList.add(randomClass);
+      parent.appendChild(clonedNode);
+    });
+}
+
+function setupNode(node: HTMLDivElement, info: string) {
+  const loggedIn = isLoggedIn();
+  const textElem = node.querySelector('span')!;
+  const copyEl = node.querySelector('button')!;
+  textElem.innerText = info;
+  copyEl.style.visibility = loggedIn ? 'visible' : 'hidden';
+  copyEl.onclick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    copyToClipboard(info);
+  };
+}
+
 function updateUsageInfo() {
-  modifyUsageInfoNodes(helpCardUsageInfoSelector, node => node.innerText.includes('adduser'), node => getPublishInfo());
   modifyUsageInfoNodes(
     dialogUsageInfoSelector,
     node =>
@@ -104,6 +149,7 @@ function updateUsageInfo() {
     }
   );
   changeTabs();
+  changeLabels();
 }
 
 init({
