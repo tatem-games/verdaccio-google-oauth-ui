@@ -1,4 +1,3 @@
-import got from 'got';
 import fetch from 'node-fetch';
 
 import { GoogleOAuth } from './OAuth';
