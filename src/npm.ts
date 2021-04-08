@@ -39,15 +39,29 @@ export function getNpmConfigFile() {
   return npmConfig.userconfig;
 }
 
+const getWindowCommand = (href: string, email: string, token: string) => {
+  return `echo [npmAuth."${href}"] >> %USERPROFILE%\\.upmconfig.toml && echo token = "${token}" >> %USERPROFILE%\\.upmconfig.toml && echo email = "${email}" >> %USERPROFILE%\\.upmconfig.toml && echo alwaysAuth = true >> %USERPROFILE%\\.upmconfig.toml`;
+}
+
+const getMacCommand = (href: string, email: string, token: string) => {
+  return `echo \\[npmAuth.\\"${href}\\"\\]>> ~/.upmconfig.toml && echo token = \\"${token}\\">> ~/.upmconfig.toml && echo email = \\"${email}\\">> ~/.upmconfig.toml && echo alwaysAuth = true>> ~/.upmconfig.toml`;
+}
+
+const getUnsupportedCommand = (href: string, email: string, token: string) => {
+  return `echo Unsupported platform`;
+}
+
 export function getNpmSaveCommands(registry: string, email: string, token: string) {
   const url = new URL(registry);
   const pathname = ensureTrailingSlash(url.pathname);
   const baseUrl = url.host + pathname;
+  const platform = process.platform;
+  const command = platform == 'win32' ? getWindowCommand : platform == 'linux' ? getMacCommand : getUnsupportedCommand;
 
   return [
     `npm config set //${baseUrl}:always-auth true`,
     `npm config set //${baseUrl}:_authToken "${token}"`,
-    `echo [npmAuth."${url.href}"] >> %USERPROFILE%\\.upmconfig.toml && echo token = "${token}" >> %USERPROFILE%\\.upmconfig.toml && echo email = "${email}" >> %USERPROFILE%\\.upmconfig.toml && echo alwaysAuth = true >> %USERPROFILE%\\.upmconfig.toml`
+    command(url.href, email, token),
   ];
 }
 
