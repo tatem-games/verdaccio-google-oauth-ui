@@ -49,6 +49,6 @@ export function getPublishInfo() {
   return [
     `npm config set ${configBase}:_authToken "${authToken}"`,
     `npm config set ${configBase}:always-auth true`,
-    `npm publish --registry ${url}`
+    `npm publish --registry ${url}`,
   ].join('\n');
 }

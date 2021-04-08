@@ -1,4 +1,4 @@
-import {getMacInfo, getPublishInfo, getWindowsInfo, init, isLoggedIn} from './plugin/index.js';
+import { getMacInfo, getPublishInfo, getWindowsInfo, init, isLoggedIn } from './plugin/index.js';
 
 const helpCardUsageInfoSelector = '#help-card > div.MuiCardContent-root > div > span';
 const dialogUsageInfoSelector = '#registryInfo--dialog-container .MuiDialogContent-root .MuiTypography-root span';
@@ -21,7 +21,11 @@ export function copyToClipboard(text: string) {
   document.body.removeChild(node);
 }
 
-function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElement, i: number) => boolean, findUsageInfo: (node: HTMLElement) => string | undefined): void {
+function modifyUsageInfoNodes(
+  selector: string,
+  findPredicate: (node: HTMLElement, i: number) => boolean,
+  findUsageInfo: (node: HTMLElement) => string | undefined
+): void {
   const loggedIn = isLoggedIn();
 
   const infoElements: NodeListOf<HTMLSpanElement> = document.querySelectorAll(selector);
@@ -83,41 +87,12 @@ function modifyUsageInfoNodes(selector: string, findPredicate: (node: HTMLElemen
 
 function changeTabs() {
   const tabs: NodeListOf<HTMLSpanElement> = document.querySelectorAll(tabSelector);
-  if (tabs.length != 3) return;
-  tabs[0].innerText = "Windows";
-  tabs[1].innerText = "Mac";
-  tabs[2].innerText = "Publish";
-}
-
-function changeLabels() {
-  const tabs: NodeListOf<HTMLSpanElement> = document.querySelectorAll(labelSelector);
-  if (tabs.length != 3) return;
-
-  tabs[0].innerText = "Windows";
-  const windowsNode = tabs[0].nextSibling as HTMLDivElement;
-  setupNode(windowsNode, getWindowsInfo());
-
-  tabs[1].innerText = "Mac";
-  const macNode = tabs[1].nextSibling as HTMLDivElement;
-  setupNode(macNode, getMacInfo());
-
-  tabs[2].innerText = "Publish";
-  tabs[2].className = tabs[1].className;
-
-  const parent = tabs[2].parentElement;
-  if (!parent) return;
-  const elements = Array.prototype.slice.call(parent.childNodes) as Array<HTMLSpanElement>;
-  const hasInjectedElement = elements.find((node: HTMLElement) => node.classList.contains(randomClass));
-  if (hasInjectedElement) return;
-
-  getPublishInfo()
-    .split('\n')
-    .forEach(info => {
-      const clonedNode = macNode.cloneNode(true) as HTMLDivElement;
-      setupNode(clonedNode, info);
-      clonedNode.classList.add(randomClass);
-      parent.appendChild(clonedNode);
-    });
+  if (tabs.length != 3) {
+    return;
+  }
+  tabs[0].innerText = 'Windows';
+  tabs[1].innerText = 'Mac';
+  tabs[2].innerText = 'Publish';
 }
 
 function setupNode(node: HTMLDivElement, info: string) {
@@ -133,6 +108,43 @@ function setupNode(node: HTMLDivElement, info: string) {
   };
 }
 
+function changeLabels() {
+  const tabs: NodeListOf<HTMLSpanElement> = document.querySelectorAll(labelSelector);
+  if (tabs.length != 3) {
+    return;
+  }
+
+  tabs[0].innerText = 'Windows';
+  const windowsNode = tabs[0].nextSibling as HTMLDivElement;
+  setupNode(windowsNode, getWindowsInfo());
+
+  tabs[1].innerText = 'Mac';
+  const macNode = tabs[1].nextSibling as HTMLDivElement;
+  setupNode(macNode, getMacInfo());
+
+  tabs[2].innerText = 'Publish';
+  tabs[2].className = tabs[1].className;
+
+  const parent = tabs[2].parentElement;
+  if (!parent) {
+    return;
+  }
+  const elements = Array.prototype.slice.call(parent.childNodes) as Array<HTMLSpanElement>;
+  const hasInjectedElement = elements.find((node: HTMLElement) => node.classList.contains(randomClass));
+  if (hasInjectedElement) {
+    return;
+  }
+
+  getPublishInfo()
+    .split('\n')
+    .forEach(info => {
+      const clonedNode = macNode.cloneNode(true) as HTMLDivElement;
+      setupNode(clonedNode, info);
+      clonedNode.classList.add(randomClass);
+      parent.appendChild(clonedNode);
+    });
+}
+
 function updateUsageInfo() {
   modifyUsageInfoNodes(
     dialogUsageInfoSelector,
@@ -142,9 +154,15 @@ function updateUsageInfo() {
         /((npm|pnpm) set|(yarn) config set)/
       ),
     node => {
-      if (node.innerText.startsWith('npm')) return getWindowsInfo()
-      if (node.innerText.startsWith('pnpm')) return getMacInfo()
-      if (node.innerText.startsWith('yarn')) return getPublishInfo()
+      if (node.innerText.startsWith('npm')) {
+        return getWindowsInfo();
+      }
+      if (node.innerText.startsWith('pnpm')) {
+        return getMacInfo();
+      }
+      if (node.innerText.startsWith('yarn')) {
+        return getPublishInfo();
+      }
       return undefined;
     }
   );

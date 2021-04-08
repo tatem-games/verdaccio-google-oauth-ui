@@ -1,11 +1,11 @@
 import { IPluginMiddleware } from '@verdaccio/types';
 import { Application, Handler, Request } from 'express';
 
-import { authorizePath, callbackPath } from '../../constants';
 import { AuthCore } from '../plugin/AuthCore';
 import { AuthProvider } from '../plugin/AuthProvider';
 import { Verdaccio } from '../verdaccio';
-import { buildStatusPage } from '../../statusPage';
+import { buildAccessDeniedPage, buildErrorPage, buildStatusPage } from '../../statusPage';
+import { getAuthorizePath, getCallbackPath } from '../../redirect';
 
 export const errorPage = buildStatusPage(`
   <h1>Access Denied</h1>
@@ -14,19 +14,6 @@ export const errorPage = buildStatusPage(`
 `);
 
 export class WebFlow implements IPluginMiddleware<any> {
-  public static getAuthorizePath(id?: string): string {
-    return authorizePath + '/' + (id || ':id?');
-  }
-
-  public static getCallbackPath(id?: string): string {
-    return callbackPath + (id ? '/' + id : '');
-  }
-
-  public static getRequestOrigin(req: Request): string {
-    const protocal = req.get('X-Forwarded-Proto') || req.protocol;
-    return protocal + '://' + req.get('host');
-  }
-
   public constructor(
     private readonly verdaccio: Verdaccio,
     private readonly core: AuthCore,
@@ -34,8 +21,8 @@ export class WebFlow implements IPluginMiddleware<any> {
   ) {}
 
   public register_middlewares(app: Application): void {
-    app.get(WebFlow.getAuthorizePath(), this.authorize.bind(this));
-    app.get(WebFlow.getCallbackPath(), this.callback.bind(this));
+    app.get(getAuthorizePath(), this.authorize.bind(this));
+    app.get(getCallbackPath(), this.callback.bind(this));
   }
 
   public async authorize(req, res, next) {
@@ -60,17 +47,22 @@ export class WebFlow implements IPluginMiddleware<any> {
         const ui = await this.core.createUiCallbackUrl(username, token);
         res.redirect(ui);
       } else {
-        res.send(errorPage);
+        res.status(401).send(buildAccessDeniedPage());
       }
     } catch (error) {
       console.error(error);
-      next(error);
+      res.status(500).send(buildErrorPage(error));
     }
   }
 
+  private getRequestOrigin(req: Request): string {
+    const protocal = req.get('X-Forwarded-Proto') || req.protocol;
+    return protocal + '://' + req.get('host');
+  }
+
   private getRedirectUrl(req: Request): string {
-    const baseUrl = this.verdaccio.baseUrl || WebFlow.getRequestOrigin(req);
-    const path = WebFlow.getCallbackPath(req.params.id);
+    const baseUrl = this.verdaccio.baseUrl || this.getRequestOrigin(req);
+    const path = getCallbackPath(req.params.id);
     return baseUrl + path;
   }
 }

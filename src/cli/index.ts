@@ -1,12 +1,16 @@
 import express from 'express';
 import open from 'open';
 
-import { buildStatusPage } from '../statusPage';
+import { cliPort, cliProviderId } from '../constants';
+import { getRegistryUrl, saveNpmToken } from '../npm';
+import { getAuthorizePath } from '../redirect';
 
-import { getConfigFile, getRegistry, save } from './npm';
 import { printUsage } from './usage';
+import { respondWithCliMessage } from './cli-response';
+import { respondWithWebPage } from './web-response';
 
-const registry = getRegistry();
+const registry = getRegistryUrl();
+const authorizeUrl = registry + getAuthorizePath(cliProviderId);
 
 if (registry.includes('registry.npmjs.org')) {
   // lgtm [js/incomplete-url-substring-sanitization]
@@ -14,21 +18,28 @@ if (registry.includes('registry.npmjs.org')) {
   process.exit(1);
 }
 
-open(registry + '/oauth/authorize');
-
-const successPage = buildStatusPage(`
-  <h1>All done!</h1>
-  <p>We've updated your npm configuration.</p>
-  <p><code>${getConfigFile()}</code></p>
-`);
-
 const server = express()
   .get('/', (req, res) => {
+    let status = req.query.status as string;
+    let email = req.query.email as string;
+    let message = req.query.message as string;
     const token = decodeURIComponent(req.query.token as string);
-    save(registry, token);
-    res.setHeader('Content-Type', 'text/html');
-    res.send(successPage);
+
+    if (!status) {
+      status = 'success';
+    }
+    try {
+      if (status === 'success') {
+        saveNpmToken(email, token);
+      }
+    } catch (error) {
+      status = 'error';
+      message = error.message;
+    }
+    respondWithWebPage(status, message, res);
+    respondWithCliMessage(status, message);
+
     server.close();
-    process.exit(0);
+    process.exit(status === 'success' ? 0 : 1);
   })
-  .listen(8239);
+  .listen(cliPort, () => open(authorizeUrl));

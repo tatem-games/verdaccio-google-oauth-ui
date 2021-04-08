@@ -1,4 +1,5 @@
 import got from 'got';
+import fetch from 'node-fetch';
 
 import { GoogleOAuth } from './OAuth';
 import { GoogleUser } from './User';
@@ -6,43 +7,41 @@ import { GoogleUser } from './User';
 export class GoogleClient {
   public constructor(private readonly tokenBaseUrl: string, private readonly userInfoBaseUrl: string) {}
 
-  public requestAccessToken(
+  public async requestAccessToken(
     code: string,
     clientId: string,
     clientSecret: string,
     redirectUrl: string
   ): Promise<GoogleOAuth> {
     const url = this.tokenBaseUrl + '/token';
+    const data = {
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: 'authorization_code',
+      redirect_uri: redirectUrl,
+      code,
+    };
     const options = {
       method: 'POST',
-      json: {
-        client_id: clientId,
-        client_secret: clientSecret,
-        grant_type: 'authorization_code',
-        redirect_uri: redirectUrl,
-        code,
+      body: JSON.stringify(data),
+      headers: {
+        'content-type': 'application/json',
       },
-    } as const;
-    return got(url, options)
-      .json()
-      .catch(e => {
-        console.error(e);
-        throw e;
-      }) as Promise<GoogleOAuth>;
+    }
+    const res = await fetch(url, options);
+    const json = await res.json();
+    return json as GoogleOAuth;
   }
 
-  public requestUser(accessToken: string): Promise<GoogleUser> {
+  public async requestUser(accessToken: string): Promise<GoogleUser> {
     const url = this.userInfoBaseUrl + '/v1/userinfo';
     const options = {
       headers: {
         Authorization: 'Bearer ' + accessToken,
       },
     } as const;
-    return got(url, options)
-      .json()
-      .catch(e => {
-        console.error(e);
-        throw e;
-      }) as Promise<GoogleUser>;
+    const res = await fetch(url, options);
+    const json = await res.json();
+    return json as GoogleUser;
   }
 }
