@@ -20,7 +20,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "bin": {
-    "verdaccio-google-oauth-ui": "lib/cli/cli.js"
+    "verdaccio-google-oauth-ui": "lib/cli/index.js"
   },
   "scripts": {
     "build": "npm run build:server && npm run build:client && npm run build:cli",
