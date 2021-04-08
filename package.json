@@ -23,9 +23,10 @@
     "verdaccio-google-oauth-ui": "lib/cli/cli.js"
   },
   "scripts": {
-    "build": "npm run build:server && npm run build:client",
+    "build": "npm run build:server && npm run build:client && npm run build:cli",
     "build:server": "tsc --p tsconfig.server.json",
     "build:client": "tsc --p tsconfig.client.json && copy src\\client\\verdaccio-4.css lib\\public\\verdaccio-4.css",
+    "build:cli": "tsc --p tsconfig.cli.json",
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "eslint --fix \"**/*.ts\"",
     "start": "verdaccio -c verdaccio.yaml",

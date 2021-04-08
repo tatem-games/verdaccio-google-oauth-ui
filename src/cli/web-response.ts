@@ -1,7 +1,8 @@
 import { Response } from 'express';
 
-import { getNpmConfigFile } from '../npm';
 import { buildAccessDeniedPage, buildErrorPage, buildStatusPage } from '../statusPage';
+
+import { getNpmConfigFile } from './npm';
 
 const successPage = buildStatusPage(`
   <h1>All done!</h1>

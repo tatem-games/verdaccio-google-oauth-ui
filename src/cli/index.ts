@@ -2,9 +2,9 @@ import express from 'express';
 import open from 'open';
 
 import { cliPort, cliProviderId } from '../constants';
-import { getRegistryUrl, saveNpmToken } from '../npm';
 import { getAuthorizePath } from '../redirect';
 
+import { getRegistryUrl, saveNpmToken } from './npm';
 import { printUsage } from './usage';
 import { respondWithCliMessage } from './cli-response';
 import { respondWithWebPage } from './web-response';
@@ -21,7 +21,7 @@ if (registry.includes('registry.npmjs.org')) {
 const server = express()
   .get('/', (req, res) => {
     let status = req.query.status as string;
-    let email = req.query.email as string;
+    const email = req.query.email as string;
     let message = req.query.message as string;
     const token = decodeURIComponent(req.query.token as string);
 

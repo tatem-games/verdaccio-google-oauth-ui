@@ -26,7 +26,7 @@ export class GoogleClient {
       headers: {
         'content-type': 'application/json',
       },
-    }
+    };
     const res = await fetch(url, options);
     const json = await res.json();
     return json as GoogleOAuth;

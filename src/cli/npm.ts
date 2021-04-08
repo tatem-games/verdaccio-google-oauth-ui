@@ -41,15 +41,15 @@ export function getNpmConfigFile() {
 
 const getWindowCommand = (href: string, email: string, token: string) => {
   return `echo [npmAuth."${href}"] >> %USERPROFILE%\\.upmconfig.toml && echo token = "${token}" >> %USERPROFILE%\\.upmconfig.toml && echo email = "${email}" >> %USERPROFILE%\\.upmconfig.toml && echo alwaysAuth = true >> %USERPROFILE%\\.upmconfig.toml`;
-}
+};
 
 const getMacCommand = (href: string, email: string, token: string) => {
   return `echo \\[npmAuth.\\"${href}\\"\\]>> ~/.upmconfig.toml && echo token = \\"${token}\\">> ~/.upmconfig.toml && echo email = \\"${email}\\">> ~/.upmconfig.toml && echo alwaysAuth = true>> ~/.upmconfig.toml`;
-}
+};
 
 const getUnsupportedCommand = (href: string, email: string, token: string) => {
   return `echo Unsupported platform`;
-}
+};
 
 export function getNpmSaveCommands(registry: string, email: string, token: string) {
   const url = new URL(registry);
@@ -65,7 +65,7 @@ export function getNpmSaveCommands(registry: string, email: string, token: strin
   ];
 }
 
-export function saveNpmToken(email:string, token: string) {
+export function saveNpmToken(email: string, token: string) {
   const registry = getRegistryUrl();
   const commands = getNpmSaveCommands(registry, email, token);
 
