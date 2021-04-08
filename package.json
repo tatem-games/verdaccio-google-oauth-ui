@@ -1,6 +1,6 @@
 {
   "name": "@tatem-games/verdaccio-google-oauth-ui",
-  "version": "0.2.7",
+  "version": "0.2.9",
   "keywords": [
     "google",
     "login",
@@ -25,7 +25,7 @@
   "scripts": {
     "build": "npm run build:server && npm run build:client && npm run build:cli",
     "build:server": "tsc --p tsconfig.server.json",
-    "build:client": "tsc --p tsconfig.client.json && copy src\\client\\verdaccio-4.css lib\\public\\verdaccio-4.css",
+    "build:client": "tsc --p tsconfig.client.json && cp src/client/verdaccio-4.css lib/public/verdaccio-4.css",
     "build:cli": "tsc --p tsconfig.cli.json",
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "eslint --fix \"**/*.ts\"",
