@@ -38,22 +38,21 @@ export class AuthCore {
       return false;
     }
     const groups = await this.provider.getGroups(user.google_token);
-    requiredGroups.concat(groups);
+    requiredGroups = requiredGroups.concat(groups);
     const allow = requiredGroups.every(g => user.real_groups.includes(g));
     try {
-      const googleUser = await this.provider.getUser(user.google_token);
-      if (allow && googleUser.email == user.name) {
+      if (allow) {
         return true;
       }
 
-      console.error(this.getDeniedMessage(user.name, groups));
+      console.error(this.getDeniedMessage(user.name, groups, requiredGroups, user.real_groups));
       return false;
     } catch (e) {
       return false;
     }
   }
 
-  private getDeniedMessage(username: string, groups: string[]): string {
-    return `Access denied: User "${username}" is not a member of "${groups.join(', ')}"`;
+  private getDeniedMessage(username: string, groups: string[], requiredGroups: string[], userGroups: string[]): string {
+    return `Access denied: User "${username}" is not a member of "${groups.join(', ')}" (required groups: "${requiredGroups.join(', ')}", userGroups: "${userGroups.join(', ')})"`;
   }
 }
