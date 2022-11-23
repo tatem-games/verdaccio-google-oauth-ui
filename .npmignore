@@ -3,3 +3,4 @@ src/
 .babelrc
 test/
 plugins/
+storage/
