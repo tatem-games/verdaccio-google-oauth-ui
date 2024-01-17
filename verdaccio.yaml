@@ -15,11 +15,11 @@ web:
 
 # To use `npm audit` uncomment the following section
 middlewares:
-  google-oauth-ui:
+  verdaccio-google-oauth-ui:
     enabled: true
 
 auth:
-  google-oauth-ui:
+  verdaccio-google-oauth-ui:
     domain: GOOGLE_DOMAIN # required, people within this org will be able to authenticate
     client-id: GOOGLE_CLIENT_ID # required
     client-secret: GOOGLE_CLIENT_SECRET # required

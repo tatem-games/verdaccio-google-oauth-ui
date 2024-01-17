@@ -1,6 +1,6 @@
-export const pluginName = '@tatem-games/verdaccio-google-oauth-ui';
+export const pluginName = 'verdaccio-google-oauth-ui';
 export const publicRoot = __dirname + '/public';
-export const staticPath = '/-/static';
+export const staticPath = '/-/static/' + pluginName;
 export const authorizePath = '/-/oauth/authorize';
 export const callbackPath = '/-/oauth/callback';
 

@@ -53,6 +53,8 @@ export class AuthCore {
   }
 
   private getDeniedMessage(username: string, groups: string[], requiredGroups: string[], userGroups: string[]): string {
-    return `Access denied: User "${username}" is not a member of "${groups.join(', ')}" (required groups: "${requiredGroups.join(', ')}", userGroups: "${userGroups.join(', ')})"`;
+    return `Access denied: User "${username}" is not a member of "${groups.join(
+      ', '
+    )}" (required groups: "${requiredGroups.join(', ')}", userGroups: "${userGroups.join(', ')})"`;
   }
 }

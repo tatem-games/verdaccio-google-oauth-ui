@@ -2,3 +2,5 @@ src/
 .eslintrc
 .babelrc
 test/
+plugins/
+storage/
